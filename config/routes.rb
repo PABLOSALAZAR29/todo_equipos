@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
-  root to: "home#index"
+  root to: "sessions#new"
   get "users/new"
   get "users/create"
   
   
   resources :users, only: %i[new create]
-   get  "signup", to: "users#new"
+   get  "registro", to: "users#new"
   resources :lists
-  resource :session
+  resources :sessions
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

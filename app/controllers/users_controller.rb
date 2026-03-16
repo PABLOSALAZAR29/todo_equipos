@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :authenticate, only: %i[new create]   # permite acceso sin login
+  allow_unauthenticated_access only: %i[new create]
 
   def new
     @user = User.new
@@ -9,9 +9,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      # Inicia sesión automáticamente después de registrarse
-      session = @user.sessions.create!(ip_address: request.remote_ip, user_agent: request.user_agent)
-      cookies.signed[:session_token] = { value: session.token, expires: 2.weeks.from_now }
+      start_new_session_for @user
       redirect_to root_path, notice: "¡Cuenta creada! Bienvenid@."
     else
       render :new, status: :unprocessable_entity
@@ -21,6 +19,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email_address, :password, :password_confirmation)
   end
 end
