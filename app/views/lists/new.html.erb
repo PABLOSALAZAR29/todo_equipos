@@ -1,0 +1,12 @@
+<h1><%= @list.new_record? ? "Nueva Lista" : "Editar Lista" %></h1>
+
+<%= form_with model: @list do |f| %>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title, required: true %>
+  </div>
+
+  <%= f.submit @list.new_record? ? "Crear" : "Actualizar" %>
+<% end %>
+
+<%= link_to "Volver a mis listas", lists_path %>
