@@ -1,17 +1,20 @@
 class ListsController < ApplicationController
-  before_action :authenticate
   before_action :set_list, only: %i[show edit update destroy]
 
   def index
-    @lists = current_user.lists.order(created_at: :desc)
+    @lists = Current.user.lists.order(created_at: :desc)
+  end
+
+  def show
+    @tasks = @list.tasks.order(:position)
   end
 
   def new
-    @list = current_user.lists.build
+    @list = Current.user.lists.build
   end
 
   def create
-    @list = current_user.lists.build(list_params)
+    @list = Current.user.lists.build(list_params)
 
     if @list.save
       redirect_to lists_path, notice: "Lista creada exitosamente."
@@ -39,7 +42,7 @@ class ListsController < ApplicationController
   private
 
   def set_list
-    @list = current_user.lists.find(params[:id])
+    @list = Current.user.lists.find(params[:id])
   end
 
   def list_params

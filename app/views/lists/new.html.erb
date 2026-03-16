@@ -1,12 +1,31 @@
-<h1><%= @list.new_record? ? "Nueva Lista" : "Editar Lista" %></h1>
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Nueva lista</h1>
+    <p class="text-sm text-gray-500 text-center mb-6">Dale un nombre a tu lista para empezar</p>
 
-<%= form_with model: @list do |f| %>
-  <div>
-    <%= f.label :title %>
-    <%= f.text_field :title, required: true %>
+    <%= form_with model: @list, class: "space-y-5" do |f| %>
+      <% if @list.errors.any? %>
+        <div class="bg-red-50 text-red-500 text-sm rounded-lg px-4 py-3">
+          <% @list.errors.full_messages.each do |msg| %>
+            <p><%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :title, "Nombre de la lista", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :title,
+              required: true,
+              autofocus: true,
+              placeholder: "Ej: Compras, Trabajo, Personal...",
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+      </div>
+
+      <%= f.submit "Crear lista", class: "w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg cursor-pointer transition-colors" %>
+    <% end %>
+
+    <p class="text-center text-sm text-gray-500 mt-6">
+      <%= link_to "Ver mis listas", lists_path, class: "text-blue-600 font-medium hover:underline" %>
+    </p>
   </div>
-
-  <%= f.submit @list.new_record? ? "Crear" : "Actualizar" %>
-<% end %>
-
-<%= link_to "Volver a mis listas", lists_path %>
+</div>
