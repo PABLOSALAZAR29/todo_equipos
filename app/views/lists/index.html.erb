@@ -1,45 +1,68 @@
-<%# app/views/lists/index.html.erb %>
 <div class="max-w-2xl mx-auto py-8 px-4">
 
-  <%# Encabezado %>
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-medium text-gray-800">Listas de tareas</h1>
-    <%= link_to "+ Nueva lista", new_list_path,
-          class: "text-sm border border-gray-200 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" %>
+    <% if Current.user.admin? %>
+      <%= link_to "+ Nueva lista", new_list_path,
+            class: "text-sm border border-gray-200 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" %>
+    <% end %>
   </div>
 
-  <%# Lista vacía %>
-  <% if @lists.empty? %>
-    <div class="text-center py-12 border border-dashed border-gray-200 rounded-lg">
-      <p class="text-gray-400 text-sm">Aún no tienes listas. ¡Crea una!</p>
-    </div>
+  <% if Current.user.admin? %>
+    <% if @users_with_lists.empty? %>
+      <p class="text-gray-400 text-sm text-center py-12">No hay usuarios registrados.</p>
+    <% else %>
+      <% @users_with_lists.each do |user| %>
+        <div class="mb-8">
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <%= user.email_address %>
+          </h2>
 
-  <%# Lista con items %>
-  <% else %>
-    <div class="flex flex-col gap-3">
-      <% @lists.each do |list| %>
-        <div class="bg-white border border-gray-100 rounded-lg px-5 py-4 flex items-center justify-between">
-
-          <%# Título y conteo %>
-          <div>
-            <p class="text-base font-medium text-gray-800"><%= list.title %></p>
-            <p class="text-xs text-gray-400 mt-0.5"><%= list.tasks.count %> tareas</p>
-          </div>
-
-          <%# Acciones %>
-          <div class="flex items-center gap-2">
-            <%= link_to "Ver", list,
-                  class: "text-sm text-blue-500 border border-blue-200 rounded-md px-3 py-1.5 hover:bg-blue-50 transition-colors" %>
-            <%= link_to "Editar", edit_list_path(list),
-                  class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
-            <%= button_to "Eliminar", list, method: :delete,
-                  class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 transition-colors bg-transparent",
-                  data: { turbo_confirm: "¿Estás seguro de eliminar esta lista?" } %>
-          </div>
-
+          <% if user.lists.empty? %>
+            <p class="text-gray-400 text-sm pl-2">Sin listas.</p>
+          <% else %>
+            <div class="flex flex-col gap-3">
+              <% user.lists.each do |list| %>
+                <div class="bg-white border border-gray-100 rounded-lg px-5 py-4 flex items-center justify-between">
+                  <div>
+                    <p class="text-base font-medium text-gray-800"><%= list.title %></p>
+                    <p class="text-xs text-gray-400 mt-0.5"><%= list.tasks.count %> tareas</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <%= link_to "Ver", list, class: "text-sm text-blue-500 border border-blue-200 rounded-md px-3 py-1.5 hover:bg-blue-50 transition-colors" %>
+                    <%= link_to "Editar", edit_list_path(list), class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+                    <%= button_to "Eliminar", list, method: :delete,
+                          class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 transition-colors bg-transparent",
+                          data: { turbo_confirm: "¿Estás seguro?" } %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    </div>
+    <% end %>
+
+  <% else %>
+    <% if @lists.empty? %>
+      <div class="text-center py-12 border border-dashed border-gray-200 rounded-lg">
+        <p class="text-gray-400 text-sm">Aún no tienes listas.</p>
+      </div>
+    <% else %>
+      <div class="flex flex-col gap-3">
+        <% @lists.each do |list| %>
+          <div class="bg-white border border-gray-100 rounded-lg px-5 py-4 flex items-center justify-between">
+            <div>
+              <p class="text-base font-medium text-gray-800"><%= list.title %></p>
+              <p class="text-xs text-gray-400 mt-0.5"><%= list.tasks.count %> tareas</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <%= link_to "Ver", list, class: "text-sm text-blue-500 border border-blue-200 rounded-md px-3 py-1.5 hover:bg-blue-50 transition-colors" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 
 </div>
