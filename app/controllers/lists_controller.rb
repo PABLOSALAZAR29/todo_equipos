@@ -1,8 +1,13 @@
 class ListsController < ApplicationController
   before_action :set_list, only: %i[show edit update destroy]
+  before_action :require_admin!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @lists = Current.user.lists.order(created_at: :desc)
+    if Current.user.admin?
+      @users_with_lists = User.includes(lists: :tasks).order(:email_address)
+    else
+      @lists = Current.user.lists.order(created_at: :desc)
+    end
   end
 
   def show
@@ -10,15 +15,22 @@ class ListsController < ApplicationController
   end
 
   def new
-    @list = Current.user.lists.build
+    @users = User.order(:email_address) if Current.user.admin?
+    @list = List.new
   end
 
   def create
-    @list = Current.user.lists.build(list_params)
+    user = if Current.user.admin? && params[:list][:user_id].present?
+      User.find(params[:list][:user_id])
+    else
+      Current.user
+    end
+    @list = user.lists.build(list_params)
 
     if @list.save
       redirect_to lists_path, notice: "Lista creada exitosamente."
     else
+      @users = User.order(:email_address) if Current.user.admin?
       render :new, status: :unprocessable_entity
     end
   end
@@ -42,7 +54,11 @@ class ListsController < ApplicationController
   private
 
   def set_list
-    @list = Current.user.lists.find(params[:id])
+    @list = if Current.user.admin?
+      List.find(params[:id])
+    else
+      Current.user.lists.find(params[:id])
+    end
   end
 
   def list_params
