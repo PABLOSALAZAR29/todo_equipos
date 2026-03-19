@@ -7,9 +7,15 @@ Rails.application.routes.draw do
   resources :users, only: %i[new create]
    get  "registro", to: "users#new"
   resources :lists do
-    resources :tasks
+    resources :tasks do
+      member do
+        patch :toggle_completed
+      end
+    end
   end
   resources :sessions
+  resource :perfil, only: [:show, :edit, :update, :create]
+#        ↑ singular — cada usuario tiene UN solo perfil
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
