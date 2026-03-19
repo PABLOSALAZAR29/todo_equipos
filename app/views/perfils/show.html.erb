@@ -1,0 +1,66 @@
+<div class="max-w-2xl mx-auto py-8 px-4">
+ <%= link_to "← Volver a listas", lists_path,
+        class: "text-sm text-gray-400 hover:text-gray-600 mb-6 inline-block" %>
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-medium text-gray-800">Mi perfil</h1>
+      <p class="text-sm text-gray-400 mt-1">Tu información personal en la empresa.</p>
+    </div>
+    <%= link_to "Editar", edit_perfil_path,
+          class: "text-sm text-blue-500 border border-blue-200 rounded-lg px-4 py-2 hover:bg-blue-50" %>
+  </div>
+
+  <% if @perfil.new_record? %>
+    <%# Si no tiene perfil aún %>
+    <div class="text-center py-12 border border-dashed border-gray-200 rounded-lg">
+      <p class="text-gray-400 text-sm mb-4">Aún no has completado tu perfil.</p>
+      <%= link_to "Completar ahora", edit_perfil_path,
+            class: "text-sm text-blue-500 border border-blue-200 rounded-lg px-4 py-2 hover:bg-blue-50" %>
+    </div>
+
+  <% else %>
+    <%# Si ya tiene perfil %>
+    <div class="bg-white border border-gray-100 rounded-lg p-8 flex flex-col gap-6">
+      <%# Foto de perfil %>
+      <div class="flex flex-col items-center gap-4 pb-6 border-b border-gray-100">
+        <% if @perfil.foto.attached? %>
+          <%= image_tag @perfil.foto, class: "w-44 h-44 rounded-full object-cover border-4 border-blue-100 shadow-lg" %>
+        <% else %>
+          <div class="w-44 h-44 rounded-full bg-gray-100 border-4 border-blue-100 flex items-center justify-center text-gray-400 text-6xl shadow-lg">&#128100;</div>
+        <% end %>
+        <div class="text-center">
+          <p class="text-lg font-semibold text-gray-800"><%= @perfil.nombre_completo %></p>
+          <p class="text-sm text-gray-500"><%= @perfil.cargo %></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Nombre completo</p>
+          <p class="text-sm font-medium text-gray-800 mt-1"><%= @perfil.nombre_completo %></p>
+        </div>
+        <div>
+        <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Cédula</p>
+        <p class="text-sm font-medium text-gray-800 mt-1"><%= @perfil.cedula %></p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Cargo</p>
+          <p class="text-sm font-medium text-gray-800 mt-1"><%= @perfil.cargo %></p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Celular</p>
+          <p class="text-sm text-gray-800 mt-1"><%= @perfil.celular %></p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Ciudad</p>
+          <p class="text-sm text-gray-800 mt-1"><%= @perfil.ciudad %>, <%= @perfil.departamento %></p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Dirección</p>
+          <p class="text-sm text-gray-800 mt-1"><%= @perfil.direccion %></p>
+        </div>
+      </div>
+
+    </div>
+  <% end %>
+</div>

@@ -2,23 +2,27 @@
 <% if Current.user %>
   <nav class="fixed top-0 left-0 right-0 z-10 bg-white border-b border-gray-100 px-6 h-[52px] flex items-center justify-between">
 
-    <%# Avatar + nombre %>
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-xs font-medium">
         <%= Current.user.email_address[0].upcase %>
       </div>
       <div>
         <p class="text-xs text-gray-400 leading-none mb-0.5">Hola,</p>
-        <p class="text-sm font-medium text-gray-800 leading-none"><%= Current.user.email_address %></p>
+        <p class="text-sm font-medium text-gray-800 leading-none">
+          <%= Current.user.perfil&.primer_nombre || Current.user.email_address %>
+        </p>
       </div>
     </div>
 
-    <%# Botón cerrar sesión %>
-    <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
-          class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 bg-transparent hover:bg-red-50 cursor-pointer transition-colors" %>
+    <div class="flex items-center gap-3">
+      <%# Botón de información/perfil %>
+      <%= link_to "Mi perfil", perfil_path,
+            class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+
+      <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
+            class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 bg-transparent cursor-pointer transition-colors" %>
+    </div>
 
   </nav>
-
-  <%# Espaciado para que el contenido no quede bajo la navbar %>
   <div class="h-[52px]"></div>
 <% end %>

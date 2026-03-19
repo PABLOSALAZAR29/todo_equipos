@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :require_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_list
-  before_action :set_task, only: [:edit, :update, :destroy]
+  before_action :set_task, only: [:edit, :update, :destroy, :toggle_completed]
 
   def index
     @tasks = @list.tasks
@@ -34,6 +34,11 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
     redirect_to @list, notice: "Tarea eliminada."
+  end
+
+  def toggle_completed
+    @task.update(completed: !@task.completed)
+    redirect_to @list, notice: "Estado de la tarea actualizado."
   end
 
   private
