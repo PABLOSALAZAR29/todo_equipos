@@ -1,4 +1,4 @@
-<div class="max-w-xl mx-auto mt-10">
+<div class="max-w-xl mx-auto mt-10" data-controller="filtro">
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-800"><%= @list.title %></h1>
     <div class="flex items-center gap-3">
@@ -9,10 +9,20 @@
     </div>
   </div>
 
+   <div class="mb-4">
+    <input type="text"
+           data-filtro-target="input"
+           data-action="input->filtro#filtrar"
+           placeholder="Buscar tarea..."
+           class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-300">
+  </div>
+
   <% if @tasks.any? %>
     <ul class="space-y-2">
       <% @tasks.each do |task| %>
-        <li class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+        <li data-filtro-target="tarea"
+            data-titulo="<%= task.title %>"
+            class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
           <span class="<%= task.completed? ? 'line-through text-gray-400' : 'text-gray-700' %> text-sm flex-1">
             <%= task.title %>
           </span>
