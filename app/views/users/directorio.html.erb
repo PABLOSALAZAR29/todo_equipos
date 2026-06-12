@@ -1,0 +1,58 @@
+<div class="max-w-4xl mx-auto py-8 px-4">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-medium text-gray-800">Directorio de usuarios</h1>
+      <p class="text-sm text-gray-400 mt-1">
+        <%= @users.count %> usuarios registrados
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <% @users.each do |user| %>
+      <div class="bg-white border border-gray-100 rounded-lg p-5 flex items-center gap-4">
+
+        <%# Foto o avatar con inicial %>
+        <% if user.perfil&.foto&.attached? %>
+          <%= image_tag user.perfil.foto.variant(resize_to_fill: [48, 48]),
+                class: "w-12 h-12 rounded-full object-cover border-2 border-blue-100 shadow-sm shrink-0" %>
+        <% else %>
+          <div class="w-12 h-12 rounded-full bg-blue-50 border-2 border-blue-100 flex items-center justify-center text-blue-600 text-xl font-semibold shadow-sm shrink-0">
+            <%= user.email_address[0].upcase %>
+          </div>
+        <% end %>
+
+        <%# Datos del usuario %>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-800 truncate">
+            <%= user.perfil&.nombre_completo&.presence || "Sin nombre" %>
+          </p>
+          <p class="text-xs text-gray-400 truncate"><%= user.email_address %></p>
+
+          <% if user.perfil&.cargo.present? %>
+            <p class="text-xs text-blue-500 mt-1"><%= user.perfil.cargo %></p>
+          <% end %>
+
+          <% if user.perfil&.ciudad.present? %>
+            <p class="text-xs text-gray-400">
+              📍 <%= user.perfil.ciudad %>, <%= user.perfil.departamento %>
+            </p>
+          <% end %>
+
+          <% if user.perfil&.celular.present? %>
+            <p class="text-xs text-gray-400">📱 <%= user.perfil.celular %></p>
+          <% end %>
+        </div>
+
+        <%# Badge de rol %>
+        <span class="text-xs px-2 py-0.5 rounded-full shrink-0
+              <%= user.admin? ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500' %>">
+          <%= user.admin? ? "Admin" : "Usuario" %>
+        </span>
+
+      </div>
+    <% end %>
+  </div>
+
+</div>

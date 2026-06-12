@@ -4,12 +4,17 @@ Rails.application.routes.draw do
   get "users/create"
   
   
-  resources :users, only: %i[new create]
+   resources :users, only: %i[new create] do
+        collection do
+        get :directorio
+       end
+    end
    get  "registro", to: "users#new"
   resources :lists do
     resources :tasks do
       member do
         patch :toggle_completed
+        patch :reorder
       end
     end
   end

@@ -19,13 +19,19 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <%# Botón de información/perfil %>
-      <%= link_to "Mi perfil", perfil_path,
-            class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+  
+  <%# Botón directorio solo para admin %>
+  <% if Current.user.admin? %>
+    <%= link_to "👥 Directorio", directorio_users_path,
+          class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+  <% end %>
 
-      <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
-            class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 bg-transparent cursor-pointer transition-colors" %>
-    </div>
+  <%= link_to "Mi perfil", perfil_path,
+        class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+
+  <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
+        class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 bg-transparent cursor-pointer transition-colors" %>
+  </div>
 
   </nav>
   <div class="h-[52px]"></div>

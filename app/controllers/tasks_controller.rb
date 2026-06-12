@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :require_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_list
-  before_action :set_task, only: [:edit, :update, :destroy, :toggle_completed]
+  before_action :set_task, only: [:edit, :update, :destroy, :toggle_completed, :reorder]
 
   def index
     @tasks = @list.tasks
@@ -41,6 +41,17 @@ class TasksController < ApplicationController
     redirect_to @list, notice: "Estado de la tarea actualizado."
   end
 
+  def reorder
+  @task.update(position: params[:position])
+
+  # Reordena todas las tareas de la lista para que no haya gaps
+  @list.tasks.order(:position).each.with_index(1) do |task, index|
+    task.update_column(:position, index)
+  end
+
+  head :ok
+  end
+
   private
 
   def set_list
@@ -56,6 +67,6 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description)
+    params.require(:task).permit(:title, :description, :due_date)
   end
 end

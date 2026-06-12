@@ -16,6 +16,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def directorio
+    redirect_to root_path, alert: "No tienes permisos." unless Current.user.admin?
+    @users = User.includes(:perfil).order(:email_address)
+  end
+
   private
 
   def user_params
