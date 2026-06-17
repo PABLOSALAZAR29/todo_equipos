@@ -1,37 +1,35 @@
-<%# app/views/shared/_navbar.html.erb %>
 <% if Current.user %>
-  <nav class="fixed top-0 left-0 right-0 z-10 bg-white border-b border-gray-100 px-6 h-[52px] flex items-center justify-between">
+  <nav class="fixed top-0 left-0 right-0 z-10 bg-gray-800 border-b border-gray-700 px-6 h-[52px] flex items-center justify-between">
 
     <div class="flex items-center gap-3">
-      <% if Current.user.perfil&.foto&.present? %>
+      <% if Current.user.perfil&.foto&.attached? %>
         <%= image_tag Current.user.perfil.foto, class: "w-8 h-8 rounded-full object-cover" %>
       <% else %>
-        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-xs font-medium">
+        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-xs font-medium border border-gray-600">
           <%= Current.user.email_address[0].upcase %>
         </div>
       <% end %>
+
       <div>
-        <p class="text-xs text-gray-400 leading-none mb-0.5">Hola,</p>
-        <p class="text-sm font-medium text-gray-800 leading-none">
+        <p class="text-xs text-gray-500 leading-none mb-0.5">Hola,</p>
+        <p class="text-sm font-medium text-gray-200 leading-none">
           <%= Current.user.perfil&.primer_nombre || Current.user.email_address %>
         </p>
       </div>
     </div>
 
     <div class="flex items-center gap-3">
-  
-  <%# Botón directorio solo para admin %>
-  <% if Current.user.admin? %>
-    <%= link_to "👥 Directorio", directorio_users_path,
-          class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
-  <% end %>
+      <% if Current.user.admin? %>
+        <%= link_to "👥 Directorio", directorio_users_path,
+              class: "text-sm text-gray-400 border border-gray-600 rounded-md px-3 py-1.5 hover:bg-gray-700 hover:text-gray-200 transition-colors" %>
+      <% end %>
 
-  <%= link_to "Mi perfil", perfil_path,
-        class: "text-sm text-gray-500 border border-gray-200 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-colors" %>
+      <%= link_to "Mi perfil", perfil_path,
+            class: "text-sm text-gray-400 border border-gray-600 rounded-md px-3 py-1.5 hover:bg-gray-700 hover:text-gray-200 transition-colors" %>
 
-  <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
-        class: "text-sm text-red-500 border border-red-200 rounded-md px-3 py-1.5 hover:bg-red-50 bg-transparent cursor-pointer transition-colors" %>
-  </div>
+      <%= button_to "Cerrar sesión", session_path(Current.session), method: :delete,
+            class: "text-sm text-red-400 border border-red-800 rounded-md px-3 py-1.5 hover:bg-red-900 bg-transparent cursor-pointer transition-colors" %>
+    </div>
 
   </nav>
   <div class="h-[52px]"></div>

@@ -1,15 +1,16 @@
 <div class="max-w-xl mx-auto mt-10" data-controller="filtro">
   <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-800"><%= @list.title %></h1>
+    <h1 class="text-2xl font-bold text-white"><%= @list.title %></h1>
     <div class="flex items-center gap-3">
       <% if Current.user.admin? %>
-        <%= link_to "Nueva tarea", new_list_task_path(@list), class: "text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" %>
+        <%= link_to "Nueva tarea", new_list_task_path(@list),
+              class: "text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" %>
       <% end %>
-      <%= link_to "← Mis listas", lists_path, class: "text-sm text-blue-600 hover:underline" %>
+      <%= link_to "← Mis listas", lists_path,
+            class: "text-sm text-gray-400 hover:text-gray-200" %>
     </div>
   </div>
-
-   <div class="mb-4">
+     <div class="mb-4">
     <input type="text"
            data-filtro-target="input"
            data-action="input->filtro#filtrar"
@@ -18,56 +19,59 @@
   </div>
 
   <% if @tasks.any? %>
-  <ul class="space-y-2" data-controller="sortable">
-    <% @tasks.each do |task| %>
-      <li data-filtro-target="tarea"
-          data-titulo="<%= task.title %>"
-          data-task-id="<%= task.id %>"
-          data-list-id="<%= @list.id %>"
-          class="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing">
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex-1">
-            <span class="<%= task.completed? ? 'line-through text-gray-400' : 'text-gray-700' %> text-sm font-medium">
-              <%= task.title %>
-            </span>
+    <ul class="space-y-2" data-controller="sortable">
+      <% @tasks.each do |task| %>
+        <li data-filtro-target="tarea"
+           data-titulo="<%= task.title %>"
+           class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-gray-500 transition-colors"
+            data-task-id="<%= task.id %>"
+            data-list-id="<%= @list.id %>">
+           
 
-            <% if task.description.present? %>
-              <p class="text-xs text-gray-400 mt-1"><%= task.description %></p>
-            <% end %>
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1">
+              <span class="<%= task.completed? ? 'line-through text-gray-600' : 'text-gray-200' %> text-sm font-medium">
+                <%= task.title %>
+              </span>
 
-            <% if task.due_date.present? %>
-              <p class="text-xs mt-1 <%= task.due_date < Date.today && !task.completed? ? 'text-red-500 font-medium' : 'text-gray-400' %>">
-                📅 <%= task.due_date.strftime("%d/%m/%Y") %>
-                <%= " — Vencida" if task.due_date < Date.today && !task.completed? %>
-              </p>
-            <% end %>
+              <% if task.description.present? %>
+                <p class="text-xs text-gray-500 mt-1"><%= task.description %></p>
+              <% end %>
+
+              <% if task.due_date.present? %>
+                <p class="text-xs mt-1 <%= task.due_date < Date.today && !task.completed? ? 'text-red-400 font-medium' : 'text-gray-500' %>">
+                  📅 <%= task.due_date.strftime("%d/%m/%Y") %>
+                  <%= " — Vencida" if task.due_date < Date.today && !task.completed? %>
+                </p>
+              <% end %>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-xs px-2 py-0.5 rounded-full <%= task.completed? ? 'bg-green-900 text-green-400 border border-green-700' : 'bg-yellow-900 text-yellow-400 border border-yellow-700' %>">
+                <%= task.completed? ? "Completada" : "Pendiente" %>
+              </span>
+
+              <%= form_with url: toggle_completed_list_task_path(@list, task), method: :patch do %>
+                <%= submit_tag task.completed? ? "Marcar pendiente" : "Marcar completada",
+                      class: "text-xs bg-gray-700 text-gray-300 border border-gray-600 px-2 py-1 rounded hover:bg-gray-600 cursor-pointer" %>
+              <% end %>
+
+              <% if Current.user.admin? %>
+                <%= link_to "Editar", edit_list_task_path(@list, task),
+                      class: "text-xs text-gray-400 border border-gray-600 px-2 py-1 rounded hover:bg-gray-700" %>
+                <%= button_to "Eliminar", list_task_path(@list, task), method: :delete,
+                      class: "text-xs text-red-400 border border-red-800 px-2 py-1 rounded hover:bg-red-900 bg-transparent cursor-pointer",
+                      data: { turbo_confirm: "¿Eliminar esta tarea?" } %>
+              <% end %>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="text-xs px-2 py-0.5 rounded-full <%= task.completed? ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600' %>">
-              <%= task.completed? ? "Completada" : "Pendiente" %>
-            </span>
-
-            <%= form_with url: toggle_completed_list_task_path(@list, task),
-                          method: :patch, class: "ml-2" do %>
-              <%= submit_tag task.completed? ? "Marcar pendiente" : "Marcar completada",
-                    class: "text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 cursor-pointer" %>
-            <% end %>
-
-            <% if Current.user.admin? %>
-              <%= link_to "Editar", edit_list_task_path(@list, task),
-                    class: "text-xs text-gray-500 border border-gray-200 px-2 py-1 rounded hover:bg-gray-50" %>
-
-              <%= button_to "Eliminar", list_task_path(@list, task), method: :delete,
-                    class: "text-xs text-red-500 border border-red-200 px-2 py-1 rounded hover:bg-red-50 bg-transparent cursor-pointer",
-                    data: { turbo_confirm: "¿Eliminar esta tarea?" } %>
-            <% end %>
-          </div>
-        </div>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p class="text-gray-400 text-sm text-center mt-10">No hay tareas en esta lista todavía.</p>
-<% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="text-center py-12 border border-dashed border-gray-700 rounded-lg">
+      <p class="text-gray-500 text-sm">No hay tareas en esta lista todavía.</p>
+    </div>
+  <% end %>
 </div>
