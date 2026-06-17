@@ -1,41 +1,62 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-  <div class="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Nueva lista</h1>
-    <p class="text-sm text-gray-500 text-center mb-6">Dale un nombre a tu lista para empezar</p>
+<%# ============================================
+    FORMULARIO NUEVA LISTA
+    Solo el admin llega aquí gracias al
+    before_action :require_admin! en el controlador
+    ============================================ %>
+
+<div class="min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-md bg-gray-800 border border-gray-700 rounded-2xl shadow-xl p-8">
+
+    <h1 class="text-3xl font-bold text-white mb-2 text-center">Nueva lista</h1>
+    <p class="text-sm text-gray-400 text-center mb-6">
+      Dale un nombre a tu lista para empezar
+    </p>
 
     <%= form_with model: @list, class: "space-y-5" do |f| %>
+
       <% if @list.errors.any? %>
-        <div class="bg-red-50 text-red-500 text-sm rounded-lg px-4 py-3">
+        <div class="bg-red-900 border border-red-700 text-red-300 text-sm rounded-lg px-4 py-3">
           <% @list.errors.full_messages.each do |msg| %>
             <p><%= msg %></p>
           <% end %>
         </div>
       <% end %>
 
+      <%# Selector de usuario — solo visible para admin
+          Permite crear una lista y asignarla a otro usuario %>
       <% if Current.user.admin? %>
         <div>
-          <%= label_tag :user_id, "Asignar a usuario", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= label_tag :user_id, "Asignar a usuario",
+                class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%# options_from_collection_for_select recorre @users
+              y crea un <option> por cada uno usando id como value
+              y email_address como texto visible %>
           <%= select_tag "list[user_id]",
                 options_from_collection_for_select(@users, :id, :email_address),
                 prompt: "Selecciona un usuario",
-                class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                class: "w-full bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
         </div>
       <% end %>
 
+      <%# Nombre de la lista %>
       <div>
-        <%= f.label :title, "Nombre de la lista", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.label :title, "Nombre de la lista",
+              class: "block text-sm font-medium text-gray-300 mb-1" %>
         <%= f.text_field :title,
               required: true,
               autofocus: true,
               placeholder: "Ej: Compras, Trabajo, Personal...",
-              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+              class: "w-full bg-gray-700 border border-gray-600 text-gray-200 placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
 
-      <%= f.submit "Crear lista", class: "w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg cursor-pointer transition-colors" %>
+      <%= f.submit "Crear lista",
+            class: "w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg cursor-pointer transition-colors" %>
+
     <% end %>
 
     <p class="text-center text-sm text-gray-500 mt-6">
-      <%= link_to "Ver mis listas", lists_path, class: "text-blue-600 font-medium hover:underline" %>
+      <%= link_to "Ver mis listas", lists_path,
+            class: "text-blue-400 font-medium hover:underline" %>
     </p>
   </div>
 </div>
