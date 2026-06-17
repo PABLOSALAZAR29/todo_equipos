@@ -1,0 +1,15 @@
+<%# ============================================
+    TURBO STREAM — ELIMINAR COMENTARIO
+    remove busca el elemento por id y lo borra del DOM
+    dom_id(@comment) genera "comment_1"
+    ============================================ %>
+
+<%# 1. Elimina el comentario del DOM %>
+<%= turbo_stream.remove dom_id(@comment) %>
+
+<%# 2. Actualiza el contador %>
+<%= turbo_stream.replace "comments_count_#{@task.id}" do %>
+  <span class="text-xs text-gray-500">
+    💬 <%= @task.comments.count %>
+  </span>
+<% end %>

@@ -21,11 +21,12 @@
   <% if @tasks.any? %>
     <ul class="space-y-2" data-controller="sortable">
       <% @tasks.each do |task| %>
-        <li data-filtro-target="tarea"
+        <li data-controller="comments"
+           data-filtro-target="tarea"
            data-titulo="<%= task.title %>"
            class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-gray-500 transition-colors"
-            data-task-id="<%= task.id %>"
-            data-list-id="<%= @list.id %>">
+           data-task-id="<%= task.id %>"
+           data-list-id="<%= @list.id %>">
            
 
           <div class="flex items-start justify-between gap-3">
@@ -44,12 +45,25 @@
                   <%= " — Vencida" if task.due_date < Date.today && !task.completed? %>
                 </p>
               <% end %>
-            </div>
 
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-xs px-2 py-0.5 rounded-full <%= task.completed? ? 'bg-green-900 text-green-400 border border-green-700' : 'bg-yellow-900 text-yellow-400 border border-yellow-700' %>">
-                <%= task.completed? ? "Completada" : "Pendiente" %>
-              </span>
+      <div id="comments_count_<%= task.id %>" class="mt-1">
+        <span class="text-xs text-gray-500">
+          💬 <%= task.comments.count %>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <span class="text-xs px-2 py-0.5 rounded-full <%= task.completed? ? 'bg-green-900 text-green-400 border border-green-700' : 'bg-yellow-900 text-yellow-400 border border-yellow-700' %>">
+        <%= task.completed? ? "Completada" : "Pendiente" %>
+      </span>
+              <%# Botón toggle de comentarios %>
+              <button
+                data-action="click->comments#toggle"
+                data-comments-target="toggleBtn"
+                class="text-xs text-gray-400 border border-gray-600 px-2 py-1 rounded hover:bg-gray-700 cursor-pointer transition-colors">
+                Ver comentarios
+              </button>
 
               <%= form_with url: toggle_completed_list_task_path(@list, task), method: :patch do %>
                 <%= submit_tag task.completed? ? "Marcar pendiente" : "Marcar completada",
@@ -64,6 +78,19 @@
                       data: { turbo_confirm: "¿Eliminar esta tarea?" } %>
               <% end %>
             </div>
+          </div>
+
+          <div data-comments-target="section" class="hidden mt-3 border-t border-gray-700 pt-3">
+            <div id="comments_list_<%= task.id %>">
+              <%= render partial: "comments/comment",
+                    collection: task.comments,
+                    locals: { list: @list, task: task } %>
+            </div>
+
+            <%= render "comments/form",
+                  list: @list,
+                  task: task,
+                  comment: Comment.new %>
           </div>
 
         </li>

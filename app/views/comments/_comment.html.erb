@@ -1,0 +1,46 @@
+<%# ============================================
+    PARCIAL DE UN COMENTARIO
+    turbo_frame_tag con el id del comentario permite
+    que Turbo Stream lo identifique para eliminarlo
+    ============================================ %>
+
+<%# dom_id(comment) genera "comment_1", "comment_2", etc. %>
+<%# Acepta `list` y `task` como locals o usa `@list`/`@task` desde el controlador %>
+<% list = local_assigns.key?(:list) ? local_assigns[:list] : @list %>
+<% task = local_assigns.key?(:task) ? local_assigns[:task] : @task %>
+
+<%= turbo_frame_tag dom_id(comment) do %>
+  <div class="flex items-start gap-3 py-3 border-b border-gray-700 last:border-0">
+
+    <%# Avatar con inicial del usuario %>
+    <div class="w-7 h-7 rounded-full bg-gray-600 flex items-center justify-center text-xs font-medium text-gray-300 shrink-0">
+      <%= comment.user.email_address[0].upcase %>
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <%# Nombre del usuario y fecha del comentario %>
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <p class="text-xs font-medium text-gray-300">
+          <%= comment.user.perfil&.primer_nombre || comment.user.email_address %>
+        </p>
+        <%# time_ago_in_words muestra "hace 5 minutos" en lugar de la fecha completa %>
+        <p class="text-xs text-gray-600">
+          hace <%= time_ago_in_words(comment.created_at) %>
+        </p>
+      </div>
+
+      <%# Contenido del comentario %>
+      <p class="text-sm text-gray-400"><%= comment.content %></p>
+    </div>
+
+    <%# Botón eliminar — solo visible para el autor o admin %>
+    <% if comment.user == Current.user || Current.user.admin? %>
+      <%= button_to "✕",
+            list_task_comment_path(list, task, comment),
+            method: :delete,
+            class: "text-xs text-gray-600 hover:text-red-400 bg-transparent cursor-pointer transition-colors shrink-0",
+            data: { turbo_confirm: "¿Eliminar este comentario?" } %>
+    <% end %>
+
+  </div>
+<% end %>

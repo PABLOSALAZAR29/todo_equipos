@@ -1,0 +1,28 @@
+<%# ============================================
+    TURBO STREAM — CREAR COMENTARIO
+    Cada línea turbo_stream es una instrucción
+    que Turbo ejecuta en el DOM sin recargar
+    ============================================ %>
+
+<%# 1. PREPEND agrega el nuevo comentario AL INICIO de la lista
+    "comments_list" es el id del contenedor en la vista %>
+<%= turbo_stream.prepend "comments_list_#{@task.id}" do %>
+  <%= render @comment %>
+<% end %>
+
+<%# 2. REPLACE reemplaza el formulario con uno nuevo vacío
+    Así el textarea queda limpio después de enviar %>
+<%= turbo_stream.replace "comment_form" do %>
+  <%= render "comments/form",
+        list: @list,
+        task: @task,
+        comment: Comment.new %>
+<% end %>
+
+<%# 3. REPLACE actualiza el contador de comentarios en la tarea
+    "comments_count_task_1" es el id que pusimos en show.html.erb %>
+<%= turbo_stream.replace "comments_count_#{@task.id}" do %>
+  <span class="text-xs text-gray-500">
+    💬 <%= @task.comments.count %>
+  </span>
+<% end %>

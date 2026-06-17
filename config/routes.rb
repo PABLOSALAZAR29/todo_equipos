@@ -16,6 +16,9 @@ Rails.application.routes.draw do
         patch :toggle_completed
         patch :reorder
       end
+      # Anidamos comments dentro de tasks
+    # solo necesitamos create y destroy
+      resources :comments, only: %i[create destroy]
     end
   end
   resources :sessions
