@@ -30,6 +30,10 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+# Gemfile
+# Fija minitest en versión 5 porque Rails 8 aún no es compatible con minitest 6
+gem "minitest", "~> 5.1"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

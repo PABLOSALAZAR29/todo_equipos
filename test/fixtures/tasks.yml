@@ -1,13 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
+  title: api rest
   completed: false
   position: 1
   list: one
 
 two:
-  title: MyString
+  title: arquitectura 
   completed: false
   position: 1
   list: two
+
+completed:
+  title: tarea ya completada
+  completed: true
+  position: 1
+  list: one

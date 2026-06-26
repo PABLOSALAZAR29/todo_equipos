@@ -1,9 +1,18 @@
+# BCrypt encripta la contraseña "password" para los tests
+# Este helper de ERB se ejecuta cuando Rails carga los fixtures
 <% password_digest = BCrypt::Password.create("password") %>
 
 one:
   email_address: one@example.com
   password_digest: <%= password_digest %>
+  role: 0  # 0 = user normal
 
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+  role: 0
+
+admin:
+  email_address: admin@example.com
+  password_digest: <%= password_digest %>
+  role: 1  # 1 = admin
